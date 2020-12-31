@@ -7,7 +7,7 @@
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
 
-    <!-- 卡片视图区域 -->
+    <!-- 添加用户 - 卡片视图区域 -->
     <el-card>
       <!-- 搜索与添加区域 -->
       <el-row :gutter="20">
@@ -54,7 +54,8 @@
             <!-- 分配角色按钮 -->
             <!-- :enterable="false" 鼠标进入到 tooltip 中自动隐藏 -->
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="mini"
+                         @click="setRole(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -147,6 +148,47 @@
     <el-button @click="editDialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="editUserInfo">确 定</el-button>
   </span>
+    </el-dialog>
+
+    <!-- 分配角色对话框-->
+    <!-- 1、调整角色对话框各项内容 绑定 setRoleDialogVisible
+         2、data 中定义 setRoleDialogVisible 对话框，setRoleDialogVisible: false 默认关闭
+         3、给 分配角色按钮 绑定单击处理事件函数,同时把当前行数据传过去 @click="setRole(scope.row)"
+         4、在 data 中定义需要被分配角色的用户信息 userInfo:{}
+         5、在 methods 写 setRole 方法，首先打开对话框，把获取到的用户信息userInfo传给 data
+         6、把 userInfo 展示在分配角色的对话框上 {{ userInfo.username }}
+         7、methods => setRole 在展示对话框之前，获取所有角色列表
+         8、data 中定义所有角色的数据列表 rolesList: []
+         9、引入注册下拉框组件 select option
+         10、使用下拉框组件，绑定各项数据
+         11、data 中定义 已选中的角色 id 值: selectedRoleId: ''
+         12、给分配角色 确定 按钮绑定处理事件函数 @click="saveRoleInfo" 点击按钮分配角色
+         13、methods 中调用接口实现 saveRoleInfo 分配角色方法
+         14、重置对话框选项，监听分配角色对话框的关闭事件 @close="setRoleDialogClosed"
+         15、methods => setRoleDialogClosed this.selectedRoleId = '' this.userInfo = {}
+    -->
+    <el-dialog
+      title="分配角色" :visible.sync="setRoleDialogVisible" width="50%"
+      @close="setRoleDialogClosed">
+      <!-- 分配角色对话框-展示用户信息 -->
+      <div>
+        <p>当前的用户：{{ userInfo.username }}</p>
+        <p>当前的角色：{{ userInfo.role_name }}</p>
+        <p>分配新角色：
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+      </span>
     </el-dialog>
 
   </div>
@@ -274,13 +316,21 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
+      },
+      // 控制分配角色对话框的显示与隐藏
+      setRoleDialogVisible: false,
+      userInfo: {},
+      // 所有角色的数据列表
+      rolesList: [],
+      // 已选中的角色 id 值
+      selectedRoleId: ''
     }
   },
   created () {
     this.getUserList()
   },
   methods: {
+    // 🔘获取用户列表
     async getUserList () {
       const { data: res } = await this.$http.get('users', { params: this.queryInfo })
       this.total = res.data.total
@@ -290,19 +340,19 @@ export default {
       }
       this.userList = res.data.users
     },
-    // 监听分页下拉框切换分页事件
+    // 🔘 监听分页下拉框切换分页事件
     handleSizeChange (newSize) {
       console.log(newSize)
       this.queryInfo.pagesize = newSize
       this.getUserList() // 改变分页数量之后重新渲染分页
     },
-    // 监听分页 页码值 改变事件
+    // 🔘监听分页 页码值 改变事件
     handleCurrentChange (newPage) {
       console.log(newPage)
       this.queryInfo.pagenum = newPage
       this.getUserList() // 改变分页数量之后重新渲染分页
     },
-    // 监听 switch 开关状态的改变，修改用户状态
+    // 🔘监听 switch 开关状态的改变，修改用户状态
     async userStateChanged (userInfo) {
       console.log(userInfo)
       const { data: res } = await this.$http.put(`users/${userInfo.id}/state/${userInfo.mg_state}`)
@@ -312,12 +362,12 @@ export default {
       }
       this.$message.success('更新用户成功！')
     },
-    // 监听添加用户对话框的关闭事件
+    // 🔘监听添加用户对话框的关闭事件
     addDialogClosed () {
       // 获取表单引用对象，调用框架清空表单方法 resetFields
       this.$refs.addFormRef.resetFields()
     },
-    // 点击按钮 添加新用户
+    // 🔘点击按钮 添加新用户
     addUser () {
       // 拿到表单的引用对象，检查页面校验是否通过，通过调用接口方法添加用户
       this.$refs.addFormRef.validate(async valid => {
@@ -335,7 +385,7 @@ export default {
         await this.getUserList()
       })
     },
-    // 展示编辑用户的对话框
+    // 🔘展示编辑用户的对话框
     async showEditDialog (id) {
       // console.log(id)
       // 调用接口 根据用户 id 查询用户信息
@@ -347,12 +397,12 @@ export default {
       this.editForm = res.data
       this.editDialogVisible = true
     },
-    // 监听修改用户对话框的关闭事件
+    // 🔘监听修改用户对话框的关闭事件
     editDialogClosed () {
       // 拿到表单引用对象，调用框架的
       this.$refs.editFormRef.resetFields()
     },
-    // 修改用户信息并提交
+    // 🔘修改用户信息并提交
     editUserInfo () {
       // 拿到表单引用对象，调用
       this.$refs.editFormRef.validate(async valid => {
@@ -377,7 +427,7 @@ export default {
         this.$message.success('更新用户信息成功！')
       })
     },
-    // 根据 id 删除用户
+    // 🔘根据 id 删除用户
     async removeUserById (id) {
       // console.log(id)
       // 弹框询问用户是否删除数据
@@ -405,6 +455,40 @@ export default {
       this.$message.success('删除用户成功！')
       // 重新获取用户列表
       await this.getUserList()
+    },
+    // 🔘展示分配角色的对话框,获取所有角色列表数据
+    async setRole (userInfo) {
+      // 把获取到的用户信息userInfo传给 data
+      this.userInfo = userInfo
+      // 调用接口，在展示对话框之前，获取所有角色列表
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取角色列表失败！')
+      }
+      this.rolesList = res.data
+      this.setRoleDialogVisible = true
+    },
+    // 🔘点击按钮，分配角色
+    async saveRoleInfo () {
+      if (!this.selectedRoleId) {
+        return this.$message.error('请选择要分配的角色！')
+      }
+      // 发起请求，保存用户选择的角色 id
+      const { data: res } = await this.$http.put(`users/${this.userInfo.id}/role`, {
+        rid: this.selectedRoleId
+      })
+      if (res.meta.status !== 200) {
+        return this.$message.error('更新用户角色失败！')
+      }
+      // 更新成功提示，刷新列表，关闭对话框
+      this.$message.success('更新角色成功！')
+      await this.getUserList()
+      this.setRoleDialogVisible = false
+    },
+    // 🔘 监听分配角色对话框的关闭事件
+    setRoleDialogClosed () {
+      this.selectedRoleId = ''
+      this.userInfo = {}
     }
   }
 }

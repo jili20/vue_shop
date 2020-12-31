@@ -3,6 +3,7 @@ html, body, #app {
     height: 100%;
     margin: 0;
     padding: 0;
+    min-width: 1366px;
 }
 
 /*用户列表面包屑导航区域*/
@@ -25,4 +26,24 @@ html, body, #app {
 /* 用户列表分页栏距离上面的距离 */
 .el-pagination {
     margin-top: 15px;
+}
+
+/* 角色一级分类标签上下距离 */
+.el-tag {
+    margin: 7px;
+}
+
+/* 角色一级分类标签 边框线 */
+.bdtop {
+    border-top: 1px solid #eee;
+}
+
+.bdbottom {
+    border-bottom: 1px solid #eee;
+}
+
+/* 角色列表-分类纵向居中 */
+.vcenter {
+    display: flex;
+    align-items: center;
 }
