@@ -70,14 +70,13 @@
            显示数据总数 total ；sizes 下拉框显示页数数量切换；
            共有多少条数据 :total="total" -->
       <el-pagination
-        background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="queryInfo.pagenum"
         :page-sizes="[1, 2, 5, 10]"
         :page-size="queryInfo.pagesize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+        :total="total" background="">
       </el-pagination>
     </el-card>
 

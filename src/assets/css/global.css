@@ -47,3 +47,8 @@ html, body, #app {
     display: flex;
     align-items: center;
 }
+
+/* 解决级联选择器没有滚动条 */
+.el-scrollbar__wrap{
+    height: 200px !important;
+}

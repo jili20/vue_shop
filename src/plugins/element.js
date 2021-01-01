@@ -4,7 +4,7 @@ import {
   Container, Header, Aside, Main, Menu, Submenu, MenuItem,
   Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn,
   Switch, Tooltip, Pagination, Dialog, MessageBox, Tag, Tree, Select,
-  Option
+  Option, Cascader
 } from 'element-ui'
 // 注册为全局可用组件
 Vue.use(Button)
@@ -33,5 +33,6 @@ Vue.use(Tag)
 Vue.use(Tree)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Cascader)
 Vue.prototype.$message = Message // 全局挂载为Vue原型属性
 Vue.prototype.$confirm = MessageBox.confirm // 全局挂载为Vue原型属性

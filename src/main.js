@@ -1,13 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-// 导入全局样式表
-import './assets/css/global.css'
+import './assets/css/global.css' // 导入全局样式表
 import './plugins/element'
-// 导入字体图标
-import './assets/fonts/iconfont.css'
-// 导入 axios
-import axios from 'axios'
+import './assets/fonts/iconfont.css' // 导入字体图标
+import axios from 'axios' // 导入 axios
+import TreeTable from 'vue-table-with-tree-grid' // 导入树形分类组件
 
 Vue.prototype.$http = axios // 全局挂载
 // 配置请求的根路径
@@ -24,6 +22,7 @@ axios.interceptors.request.use(config => {
   return config
 })
 Vue.config.productionTip = false
+Vue.component('tree-table', TreeTable) // 注册树形分类组件
 
 new Vue({
   router,
