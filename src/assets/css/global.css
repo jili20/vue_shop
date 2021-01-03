@@ -49,6 +49,26 @@ html, body, #app {
 }
 
 /* 解决级联选择器没有滚动条 */
-.el-scrollbar__wrap{
+.el-scrollbar__wrap {
     height: 200px !important;
+}
+
+/* 添加商品列表页 步骤条 */
+.el-steps {
+    margin: 15px 0;
+}
+
+/* 添加商品列表页 步骤条文字 */
+.el-step__title {
+    font-size: 13px !important;
+}
+
+/* 添加商品复选框之间的距离 */
+.el-checkbox {
+    margin: 0 5px 0 0 !important;
+}
+
+/* 富文本最小高度 */
+.ql-editor{
+    min-height: 300px;
 }
