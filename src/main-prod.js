@@ -2,19 +2,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import './assets/css/global.css' // 导入全局样式表
-import './plugins/element'
 import './assets/fonts/iconfont.css' // 导入字体图标
 import axios from 'axios' // 导入 axios
 import TreeTable from 'vue-table-with-tree-grid' // 导入树形分类组件
 import VueQuillEditor from 'vue-quill-editor' // 导入富文本编辑器
 
-// 导入富文本编辑器对应的样式
-import 'quill/dist/quill.core.css' // import styles
-import 'quill/dist/quill.snow.css' // for snow theme
-import 'quill/dist/quill.bubble.css' // for bubble theme
 // 导入 请求进度条效果 NProgress 包对应的JS和CSS
 import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
 
 Vue.prototype.$http = axios // 全局挂载
 
